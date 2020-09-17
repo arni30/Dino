@@ -16,27 +16,30 @@ public class Dino {
 
     public Dino(double height) {
         ground2.setLayoutX(50);
-        ground2.setLayoutY(height - 87 - dinoStandImg.getHeight());
-        animationRun("Dino-stand.png", "Dino-right-up.png", "Dino-left-up.png");
+        ground2.setY(height - 87 - dinoStandImg.getHeight());
+        System.out.println(ground2.getY());
         animationDown("Dino-below-left-up.png", "Dino-below-right-up.png");
+//        animationDown("Cactus-3.png", "Cactus-2.png");
+        animationRun("Dino-stand.png", "Dino-right-up.png", "Dino-left-up.png");
+
 
 
     }
 
     public void animationRun(String img1, String img2, String img3) {
-        timelineRun = new Timeline(new KeyFrame(Duration.millis(200),
+        timelineRun = new Timeline(new KeyFrame(Duration.millis(300),
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
                 ground2.setImage(new Image(img1));
             }
-        }), new KeyFrame(Duration.millis(200),
+        }), new KeyFrame(Duration.millis(400),
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
                 ground2.setImage(new Image(img2));
             }
-        }), new KeyFrame(Duration.millis(300),
+        }), new KeyFrame(Duration.millis(600),
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
@@ -44,6 +47,7 @@ public class Dino {
             }
         }));
         timelineRun.setCycleCount(Timeline.INDEFINITE);
+        timelineRun.setRate(2);
     }
     public void animationDown(String img1, String img2) {
         timelineDown = new Timeline(new KeyFrame(Duration.millis(200),
@@ -52,7 +56,7 @@ public class Dino {
                     public void handle(ActionEvent t) {
                         ground2.setImage(new Image(img1));
                     }
-                }), new KeyFrame(Duration.millis(200),
+                }), new KeyFrame(Duration.millis(300),
                 new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent t) {

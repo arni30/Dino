@@ -24,15 +24,27 @@ public class Game {
         gameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.SPACE) {
-                    dino.timelineDown.play();
+                    dino.timelineRun.play();
                     ground.timeline.play();
                 }
                 else if (ke.getCode() == KeyCode.DOWN) {
-                    dino.timelineRun.play();
+                    dino.timelineRun.stop();
+                    dino.timelineDown.play();
+//                    dino.ground2.setY(685);
+
+
                 }
-////                dino.timelineDown.pause();
             }
         });
+        gameScene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+                    if (event.getCode() == KeyCode.DOWN) {
+//                        dino.ground2.setLayoutY(668);
+                        dino.timelineDown.stop();
+                        dino.timelineRun.play();
+
+                    }
+                });
+
         primaryStage.setScene(gameScene);
 
     }
