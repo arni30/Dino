@@ -11,6 +11,7 @@ public class Ground {
     public ImageView ground1;
     final private double sceneWidth;
     final private double imgWidth;
+    public Timeline timeline;
 
     public Ground(double width) {
         Image groundImg = new Image("Ground.png");
@@ -19,12 +20,11 @@ public class Ground {
         this.ground1 = new ImageView(groundImg);
         this.sceneWidth = width;
         this.imgWidth = groundImg.getWidth();
-        animation();
-    }
-    private void animation() {
         ground1.setLayoutY(700);
         ground.setLayoutY(700);
-
+        animation();
+    }
+    public void animation() {
         Duration startDuration = Duration.ZERO;
         Duration endDuration = Duration.seconds(5);
 
@@ -38,10 +38,9 @@ public class Ground {
         KeyValue endKeyValue1 = new KeyValue(ground1.translateXProperty(), -1.0 * sceneWidth);
         KeyFrame endKeyFrame1 = new KeyFrame(endDuration, endKeyValue1);
 
-        Timeline timeline = new Timeline(startKeyFrame, endKeyFrame, startKeyFrame1, endKeyFrame1);
+        timeline = new Timeline(startKeyFrame, endKeyFrame, startKeyFrame1, endKeyFrame1);
 
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
     }
 
 }
