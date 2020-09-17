@@ -23,7 +23,7 @@ public class HelloWorld extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Dino");
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.setWidth(800);
         primaryStage.setHeight(800);
         MainMenu mainMenu = new MainMenu();

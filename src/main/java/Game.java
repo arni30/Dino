@@ -1,45 +1,32 @@
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import javafx.animation.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Game {
+    final private Group root = new Group();
+
     public void game(Stage primaryStage) {
-        BorderPane root = new BorderPane();
-        Image image = new Image("Ground.png");
-        ImageView ground = new ImageView(image);
-        BorderPane.setMargin(ground, new Insets(0, 0 , 50, 0));
-        root.setBottom(ground);
+
         Scene gameScene = new Scene(root);
-        double sceneWidth = gameScene.getWidth();
-        double textWidth = image.getWidth();
-
-        Duration startDuration = Duration.ZERO;
-        Duration endDuration = Duration.seconds(5);
-
-            KeyValue startKeyValue = new KeyValue(ground.translateXProperty(), 0);
-            KeyFrame startKeyFrame = new KeyFrame(startDuration, startKeyValue);
-            KeyValue endKeyValue = new KeyValue(ground.translateXProperty(), -1.0 * textWidth);
-            KeyFrame endKeyFrame = new KeyFrame(endDuration, endKeyValue);
-
-            // Create a Timeline
-            Timeline timeline = new Timeline(startKeyFrame, endKeyFrame);
-            // Let the animation run forever
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            // Run the animation
-            timeline.play();
-
+        Ground ground = new Ground(gameScene.getWidth());
+        Dino dino = new Dino(primaryStage.getHeight());
+        Rectangle2D rectangle2D = new Rectangle2D(0, 0, 64, 64);
+        root.getChildren().addAll(ground.ground, ground.ground1, dino.ground2);
         primaryStage.setScene(gameScene);
+
     }
+//    @Override
+//    public void keyPressed(KeyEvent e){
+//        if (e.getKeyCode()==KeyEvent.VK_SPACE) {
+//
+//        }
+//    }
 }
