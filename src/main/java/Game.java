@@ -1,57 +1,79 @@
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Game {
-    final private Group root = new Group();
+    public Group root = new Group();
 
     public void game(Stage primaryStage) {
 
         Scene gameScene = new Scene(root);
         Ground ground = new Ground(gameScene.getWidth());
         Dino dino = new Dino(primaryStage.getHeight());
-        root.getChildren().addAll(ground.ground, ground.ground1, dino.ground2);
+        Obstacles obstacles = new Obstacles();
+
+        root.getChildren().addAll(ground.ground, ground.ground1, dino.dinoRun, dino.dinoDown, obstacles.obstacles);
+//        root.addEventHandler(DragEvent.DRAG_ENTERED,
+//                new EventHandler<DragEvent>() {
+//                    @Override
+//                    public void handle(DragEvent) {
+//                        Shape intersect = Shape.intersect(objectA, objectB);
+//
+//                        if (intersect.getBoundsInParent().getWidth() > 0) {
+//                            label.setText("ObjectA intersects ObjectB");
+//                        } else {
+//                            label.setText("ObjectA does not intersect ObjectB");
+//                        }
+//                    };
+//                });
+
         gameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            public void handle(KeyEvent ke) {
-                if (ke.getCode() == KeyCode.SPACE) {
+            public void handle(KeyEvent key) {
+                if (key.getCode() == KeyCode.ENTER) {
                     dino.timelineRun.play();
                     ground.timeline.play();
+                    obstacles.animation1.start();
+                    obstacles.animation2.start();
+                    obstacles.animation3.start();
+                    obstacles.animation4.start();
+                    obstacles.animation5.start();
                 }
-                else if (ke.getCode() == KeyCode.DOWN) {
-                    dino.timelineRun.stop();
-                    dino.timelineDown.play();
-//                    dino.ground2.setY(685);
-
-
+                if (key.getCode() == KeyCode.SPACE) {
+                    dino.timelineRun.pause();
+                    dino.dinoRun.setImage(dino.getImage());
+                    dino.jumpTimer.start();
+                }
+                else if (key.getCode() == KeyCode.DOWN) {
+                    dino.dinoRun.setVisible(false);
+                    dino.dinoDown.setVisible(true);
+                        dino.timelineDown.play();
+                        dino.timelineRun.pause();
                 }
             }
         });
-        gameScene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-                    if (event.getCode() == KeyCode.DOWN) {
-//                        dino.ground2.setLayoutY(668);
-                        dino.timelineDown.stop();
+        gameScene.addEventFilter(KeyEvent.KEY_RELEASED, key -> {
+                    if (key.getCode() == KeyCode.DOWN) {
+                        dino.dinoRun.setVisible(true);
+                        dino.dinoDown.setVisible(false);
+                        dino.timelineDown.pause();
                         dino.timelineRun.play();
-
                     }
                 });
-
         primaryStage.setScene(gameScene);
 
     }
-//    @Override
-//    public void keyPressed(KeyEvent e){
-//        if (e.getKeyCode()==KeyEvent.VK_SPACE) {
-//
-//        }
-//    }
+    private void colision() {
+
+    }
 }

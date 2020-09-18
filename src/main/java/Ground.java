@@ -27,6 +27,7 @@ public class Ground {
     public void animation() {
         Duration startDuration = Duration.ZERO;
         Duration endDuration = Duration.seconds(5);
+        System.out.println(sceneWidth);
 
         KeyValue startKeyValue = new KeyValue(ground.translateXProperty(), sceneWidth);
         KeyFrame startKeyFrame = new KeyFrame(startDuration, startKeyValue);
