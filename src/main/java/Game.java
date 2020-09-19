@@ -1,55 +1,51 @@
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.effect.ColorInput;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Game {
-    public Group root = new Group();
+import java.awt.*;
 
+public class Game {
+    public Pane root = new Pane();
     public void game(Stage primaryStage) {
 
         Scene gameScene = new Scene(root);
         Ground ground = new Ground(gameScene.getWidth());
-        Dino dino = new Dino(primaryStage.getHeight());
-        Obstacles obstacles = new Obstacles();
-
-        root.getChildren().addAll(ground.ground, ground.ground1, dino.dinoRun, dino.dinoDown, obstacles.obstacles);
-//        root.addEventHandler(DragEvent.DRAG_ENTERED,
-//                new EventHandler<DragEvent>() {
-//                    @Override
-//                    public void handle(DragEvent) {
-//                        Shape intersect = Shape.intersect(objectA, objectB);
-//
-//                        if (intersect.getBoundsInParent().getWidth() > 0) {
-//                            label.setText("ObjectA intersects ObjectB");
-//                        } else {
-//                            label.setText("ObjectA does not intersect ObjectB");
-//                        }
-//                    };
-//                });
+        Obstacles obstacles = new Obstacles(root);
+        Dino dino = new Dino(primaryStage.getHeight(), obstacles);
+        Score score = new Score();
+        root.getChildren().addAll(ground.ground, ground.ground1, dino.dinoRun, dino.dinoDown, score.score);
+        root.setStyle("-fx-background-color: linear-gradient(from 50% 25% to 100% 100%, #fff, #661a33)");
 
         gameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent key) {
-                if (key.getCode() == KeyCode.ENTER) {
+                if (key.getCode() == KeyCode.SPACE && score.timeSeconds == 0) {
                     dino.timelineRun.play();
+                    dino.collision(obstacles,ground, dino, score);
                     ground.timeline.play();
-                    obstacles.animation1.start();
-                    obstacles.animation2.start();
-                    obstacles.animation3.start();
-                    obstacles.animation4.start();
-                    obstacles.animation5.start();
+                    obstacles.animationCactus.start();
+                    score.timelineScore.play();
+                    dino.dinoRun.setImage(dino.getImage());
+                    dino.jumpTimer.start();
                 }
-                if (key.getCode() == KeyCode.SPACE) {
+                else if (key.getCode() == KeyCode.SPACE) {
                     dino.timelineRun.pause();
                     dino.dinoRun.setImage(dino.getImage());
                     dino.jumpTimer.start();
@@ -57,8 +53,8 @@ public class Game {
                 else if (key.getCode() == KeyCode.DOWN) {
                     dino.dinoRun.setVisible(false);
                     dino.dinoDown.setVisible(true);
-                        dino.timelineDown.play();
-                        dino.timelineRun.pause();
+                    dino.timelineDown.play();
+                    dino.timelineRun.pause();
                 }
             }
         });
@@ -71,9 +67,6 @@ public class Game {
                     }
                 });
         primaryStage.setScene(gameScene);
-
-    }
-    private void colision() {
 
     }
 }
