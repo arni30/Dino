@@ -1,56 +1,67 @@
 import javafx.animation.Animation;
-import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import java.awt.*;
 
 public class Game {
-    public Pane root = new Pane();
+    final public Pane root = new Pane();
+    final private Scene gameScene;
+    final private Ground ground;
+    final private Obstacles obstacles;
+    final private Score score;
+    final private Dino dino;
+    final private Clouds clouds;
+
+    public Game(Stage primaryStage) {
+        gameScene = new Scene(root);
+        ground = new Ground(gameScene.getWidth());
+        obstacles = new Obstacles(root);
+        score = new Score();
+        clouds = new Clouds(root);
+        dino = new Dino(obstacles, ground, score, primaryStage, clouds);
+        game(primaryStage);
+
+    }
     public void game(Stage primaryStage) {
+        ImageView sun = new ImageView(new Image("Sun.png"));
+        sun.setFitHeight(200);
+        sun.setFitWidth(200);
+        sun.setX(20);
+        sun.setY(20);
+        root.getChildren().addAll(ground.ground, ground.ground1,
+                dino.dinoRun, dino.dinoDown, score.score, dino.gameOver.vBox, sun);
+        root.setStyle("-fx-background-color: linear-gradient(from 1% 20% to 40% 55%, lightpink, #fff)");
+        keyPressed();
+        keyReleased();
+        primaryStage.setScene(gameScene);
 
-        Scene gameScene = new Scene(root);
-        Ground ground = new Ground(gameScene.getWidth());
-        Obstacles obstacles = new Obstacles(root);
-        Dino dino = new Dino(primaryStage.getHeight(), obstacles);
-        Score score = new Score();
-        root.getChildren().addAll(ground.ground, ground.ground1, dino.dinoRun, dino.dinoDown, score.score);
-        root.setStyle("-fx-background-color: linear-gradient(from 50% 25% to 100% 100%, #fff, #661a33)");
-
+    }
+    private void keyPressed() {
         gameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent key) {
                 if (key.getCode() == KeyCode.SPACE && score.timeSeconds == 0) {
+                    dino.timelineCollision.play();
                     dino.timelineRun.play();
-                    dino.collision(obstacles,ground, dino, score);
                     ground.timeline.play();
                     obstacles.animationCactus.start();
                     score.timelineScore.play();
                     dino.dinoRun.setImage(dino.getImage());
                     dino.jumpTimer.start();
-                }
-                else if (key.getCode() == KeyCode.SPACE) {
+                    clouds.animation.start();
+                } else if (key.getCode() == KeyCode.SPACE
+                        && dino.timelineRun.getStatus() == Animation.Status.RUNNING) {
                     dino.timelineRun.pause();
                     dino.dinoRun.setImage(dino.getImage());
                     dino.jumpTimer.start();
-                }
-                else if (key.getCode() == KeyCode.DOWN) {
+                } else if (key.getCode() == KeyCode.DOWN
+                        && dino.timelineRun.getStatus() == Animation.Status.RUNNING) {
                     dino.dinoRun.setVisible(false);
                     dino.dinoDown.setVisible(true);
                     dino.timelineDown.play();
@@ -58,15 +69,16 @@ public class Game {
                 }
             }
         });
-        gameScene.addEventFilter(KeyEvent.KEY_RELEASED, key -> {
-                    if (key.getCode() == KeyCode.DOWN) {
-                        dino.dinoRun.setVisible(true);
-                        dino.dinoDown.setVisible(false);
-                        dino.timelineDown.pause();
-                        dino.timelineRun.play();
-                    }
-                });
-        primaryStage.setScene(gameScene);
+    }
 
+    private void keyReleased() {
+        gameScene.addEventFilter(KeyEvent.KEY_RELEASED, key -> {
+            if (key.getCode() == KeyCode.DOWN && dino.timelineDown.getStatus() == Animation.Status.RUNNING) {
+                dino.dinoRun.setVisible(true);
+                dino.dinoDown.setVisible(false);
+                dino.timelineDown.pause();
+                dino.timelineRun.play();
+            }
+        });
     }
 }

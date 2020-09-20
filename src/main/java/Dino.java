@@ -6,16 +6,15 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
 public class Dino {
-    public VBox vBox;
+    public GameOverMenu gameOver;
     public Timeline timelineRun;
     public Timeline timelineDown;
-    public Timeline collision;
-    public TranslateTransition timelineJumpUp;
-    public TranslateTransition timelineJumpDown;
+    public Timeline timelineCollision;
     public AnimationTimer jumpTimer;
 
     final private Image dinoStandImg = new Image("Dino-stand.png");
@@ -23,18 +22,23 @@ public class Dino {
     public ImageView dinoRun = new ImageView(dinoStandImg);
     public ImageView dinoDown = new ImageView(dinoDownImg);
 
-    public Dino(double height, Obstacles obstacles) {
+    public Dino(Obstacles obstacles, Ground ground, Score score, Stage primaryStage, Clouds clouds) {
+        gameOver = new GameOverMenu(primaryStage);
         dinoRun.setX(50);
-        dinoRun.setY(height - 85 - dinoStandImg.getHeight());
+        dinoRun.setY(primaryStage.getHeight() - 85 - dinoStandImg.getHeight());
         dinoDown.setVisible(false);
         dinoDown.setX(50);
         dinoDown.setY(685);
+        dinoRun.setStyle("-fx-effect: dropshadow( gaussian , lightcoral , 0.1,0.1,0.1,0.1 );");
         animationDown("Dino-below-left-up.png", "Dino-below-right-up.png");
         animationRun("Dino-stand.png", "Dino-right-up.png", "Dino-left-up.png");
         animationJumpUp();
+        collision(obstacles, ground, score, clouds);
     }
 
-    public void animationRun(String img1, String img2, String img3) {
+
+
+    private void animationRun(String img1, String img2, String img3) {
         timelineRun = new Timeline(new KeyFrame(Duration.millis(300),
                 new EventHandler<ActionEvent>() {
                     @Override
@@ -58,7 +62,7 @@ public class Dino {
         timelineRun.setRate(2.5);
     }
 
-    public void animationDown(String img1, String img2) {
+    private void animationDown(String img1, String img2) {
         timelineDown = new Timeline(new KeyFrame(Duration.millis(400),
                 new EventHandler<ActionEvent>() {
                     @Override
@@ -78,12 +82,12 @@ public class Dino {
 
     double gravity = 0;
 
-    public void animationJumpUp() {
+    private void animationJumpUp() {
         double ypreviousPos = dinoRun.getTranslateY();
         jumpTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                dinoRun.setTranslateY(dinoRun.getTranslateY() - 18 + gravity);
+                dinoRun.setTranslateY(dinoRun.getTranslateY() - 16 + gravity);
                 gravity = gravity + 1;
                 if (ypreviousPos == dinoRun.getTranslateY()) {
                     timelineRun.play();
@@ -99,32 +103,34 @@ public class Dino {
         return dinoStandImg;
     }
 
-    public void collision(Obstacles obstacles, Ground ground, Dino dino, Score score) {
-        collision = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
+    private void collision(Obstacles obstacles, Ground ground, Score score, Clouds clouds) {
+        timelineCollision = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                for (ImageView i : obstacles.imageList)
-//                if (dinoRun.getBoundsInParent().intersects(i.getBoundsInParent())) {
-                if (dinoRun.getBoundsInParent().intersects(i.getLayoutX() +10, i.getLayoutY()+10, i.getBoundsInParent().getWidth() - 10, i.getBoundsInParent().getHeight() - 10)) {
-//                    System.out.println("ObjectA intersects ObjectB");
-                    obstacles.animationCactus.stop();
-                    ground.timeline.stop();
-                    dino.timelineRun.stop();
-                    score.timelineScore.stop();
-//                    Button restart = new Button("Restart");
-//                    restart.setMinWidth(400);
-//                    restart.setStyle("-fx-background-color: transparent;" +
-//                            " -fx-font-family: 'Apple Chancery';" +
-//                            " -fx-font-size: 50px;" +
-//                            " -fx-opacity: .3;");
-//                    Button exit = new Button("Main Menu");
-//                    vBox = new VBox(restart, exit);
-//                    vBox.setAlignment(Pos.CENTER);
+                if (score.timeSeconds != 0 && score.timeSeconds % 100 == 0) {
+                    ground.timeline.setRate(ground.timeline.getRate() + 0.0001);
+                    obstacles.speed += 0.0004;
+
+                }
+                for (ImageView i : obstacles.imageList) {
+                    if (dinoRun.getBoundsInParent().intersects(i.getLayoutX() + 10, i.getLayoutY() + 10,
+                            i.getBoundsInParent().getWidth() - 15,
+                            i.getBoundsInParent().getHeight() - 15)) {
+                        obstacles.animationCactus.stop();
+                        ground.timeline.stop();
+                        timelineDown.stop();
+                        jumpTimer.stop();
+                        timelineRun.stop();
+                        timelineCollision.stop();
+                        score.timelineScore.stop();
+                        gameOver.buttonsShow();
+                        clouds.animation.stop();
+                    }
                 }
 
             }
         }));
-        collision.setCycleCount(Timeline.INDEFINITE);
-        collision.play();
+        timelineCollision.setCycleCount(Timeline.INDEFINITE);
+        timelineCollision.play();
     }
 }

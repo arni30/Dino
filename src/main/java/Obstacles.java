@@ -20,6 +20,7 @@ public class Obstacles {
     public ImageView cactus;
     public AnimationTimer animationCactus;
     ArrayList<ImageView> imageList;
+    public double speed = 4;
 
     public Obstacles(Pane root) {
         cactus1 = new Image("Cactus-1.png");
@@ -39,6 +40,7 @@ public class Obstacles {
             cactus = new ImageView();
             cactus.setImage(images.get(i));
             cactus.setLayoutY(670);
+            cactus.setStyle("-fx-effect: dropshadow( gaussian , lightcoral , 0.1,0.1,0.1,0.1 );");
              rand = random();
             System.out.println(rand);
             cactus.setLayoutX(rand);
@@ -48,6 +50,7 @@ public class Obstacles {
         cactus = imageList.get((int)(Math.random() * 5));
         animationCactus = animation();
     }
+
     private double random() {
         double result = 800 + (int)(Math.random() * 15) * 100;
         System.out.println(result);
@@ -59,15 +62,14 @@ public class Obstacles {
 
         return result;
     }
-    public AnimationTimer animation() {
 
+    public AnimationTimer animation() {
         AnimationTimer animation = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 for (ImageView i : imageList) {
-                    i.setLayoutX(i.getLayoutX() - 4);
+                    i.setLayoutX(i.getLayoutX() - speed);
                     if (i.getLayoutX() < -50) {
-//                        cactus = imageList.get((int) (Math.random() * 5));
                         i.setLayoutX(random());
                     }
                 }

@@ -15,9 +15,10 @@ public class Ground {
 
     public Ground(double width) {
         Image groundImg = new Image("Ground.png");
-
         this.ground = new ImageView(groundImg);
         this.ground1 = new ImageView(groundImg);
+        ground1.setStyle("-fx-effect: dropshadow( gaussian , lightcoral , 0.1,0.1,0.1,0.1 );");
+        ground.setStyle("-fx-effect: dropshadow( gaussian , lightcoral , 0.1,0.1,0.1,0.1 );");
         this.sceneWidth = width;
         this.imgWidth = groundImg.getWidth();
         ground1.setLayoutY(700);
