@@ -42,6 +42,7 @@ public class Clouds {
                     i.setLayoutX(i.getLayoutX() - 1);
                     if (i.getLayoutX() < -50) {
                         i.setLayoutX(random(images));
+                        i.setLayoutY(100 + (int)(Math.random() * 30));
                     }
                 }
             }

@@ -1,7 +1,7 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class HelloWorld extends Application {
+public class DinoGame extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Dino");

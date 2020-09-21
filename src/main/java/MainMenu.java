@@ -1,3 +1,6 @@
+import com.mongodb.DB;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -29,7 +32,10 @@ public class MainMenu {
     public VBox vBox;
     public void mainMenuRender(Stage primaryStage) {
         BorderPane root = new BorderPane();
-
+        Database m = new Database();
+//        Mongo mongo = new Mongo("localhost", 27017);
+//        MongoClient mongoClient = new MongoClient();
+//        DB database = mongoClient.getDB("myMongoDb");
         dinoLable(root);
         buttonRender(primaryStage, root);
         Scene mainMenu = new Scene(root);

@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.sql.*;
 
 
 public class Dino {
@@ -21,7 +22,6 @@ public class Dino {
     final private Image dinoDownImg = new Image("Dino-below-right-up.png");
     public ImageView dinoRun = new ImageView(dinoStandImg);
     public ImageView dinoDown = new ImageView(dinoDownImg);
-
     public Dino(Obstacles obstacles, Ground ground, Score score, Stage primaryStage, Clouds clouds) {
         gameOver = new GameOverMenu(primaryStage);
         dinoRun.setX(50);
@@ -107,15 +107,16 @@ public class Dino {
         timelineCollision = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (score.timeSeconds != 0 && score.timeSeconds % 100 == 0) {
+                if (score.timeSeconds != 0 && score.timeSeconds % 50 == 0 && obstacles.speed  < 4.5) {
                     ground.timeline.setRate(ground.timeline.getRate() + 0.0001);
                     obstacles.speed += 0.0004;
 
                 }
                 for (ImageView i : obstacles.imageList) {
                     if (dinoRun.getBoundsInParent().intersects(i.getLayoutX() + 10, i.getLayoutY() + 10,
-                            i.getBoundsInParent().getWidth() - 15,
-                            i.getBoundsInParent().getHeight() - 15)) {
+                            i.getBoundsInParent().getWidth() - 16,
+                            i.getBoundsInParent().getHeight() - 16)) {
+                        dinoRun.setImage(new Image("Dino-big-eyes.png"));
                         obstacles.animationCactus.stop();
                         ground.timeline.stop();
                         timelineDown.stop();

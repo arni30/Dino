@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class Score {
@@ -12,8 +13,12 @@ public class Score {
     Integer timeSeconds = 0;
     public Score() {
         score = new Label();
+        score.getStylesheets().add("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+        score.setStyle("-fx-font-family:'Press Start 2P'; -fx-font-size: 15;" +
+                " -fx-effect: dropshadow( gaussian , red , 1,1,1,1 );-fx-opacity: .3");
         score.setText("Score: " + "00000");
-        score.setLayoutX(715);
+        score.setLayoutY(10);
+        score.setLayoutX(620);
         timelineScore = new Timeline();
         timelineScore.setCycleCount(Timeline.INDEFINITE);
 

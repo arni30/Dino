@@ -42,7 +42,6 @@ public class Obstacles {
             cactus.setLayoutY(670);
             cactus.setStyle("-fx-effect: dropshadow( gaussian , lightcoral , 0.1,0.1,0.1,0.1 );");
              rand = random();
-            System.out.println(rand);
             cactus.setLayoutX(rand);
             root.getChildren().addAll(cactus);
             imageList.add(cactus);
@@ -53,13 +52,12 @@ public class Obstacles {
 
     private double random() {
         double result = 800 + (int)(Math.random() * 15) * 100;
-        System.out.println(result);
 
         for (ImageView y : imageList) {
-            if (Math.abs(result - y.getLayoutX()) < 150)
-                result += 1600;
+            if (Math.abs(result - y.getLayoutX()) < 200)
+                result = -50;
         }
-
+        System.out.println(result);
         return result;
     }
 
