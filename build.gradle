@@ -14,16 +14,9 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 application {
-    mainClassName="DinoGame"
+    mainClassName= "world.ucode.DinoGame"
 }
 javafx {
     version = "11.0.2"
     modules = [ 'javafx.controls' ]
-}
-
-dependencies {
-    compile 'org.mongodb:mongodb-driver:3.3.0'
-}
-repositories {
-    mavenCentral()
 }
